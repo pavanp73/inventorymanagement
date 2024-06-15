@@ -9,5 +9,5 @@ public interface InventoryService {
 
     Inventory createOrUpdateInventory(int userId, int productId, int quantity) throws ProductNotFoundException, UserNotFoundException, UnAuthorizedAccessException;
 
-    void deleteInventory(int userId, int productId) throws  UserNotFoundException, UnAuthorizedAccessException;
+    void deleteInventory(int userId, int productId) throws ProductNotFoundException, UserNotFoundException, UnAuthorizedAccessException;
 }

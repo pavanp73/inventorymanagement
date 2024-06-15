@@ -40,9 +40,9 @@ public class InventoryServiceImpl implements InventoryService {
         3. Check if the user is ADMIN, if not, throw UnAuthorized error
         4. get product from DB with the given productId
         5. If the product is not found then throw exception
-        3. Get the inventory of product with the obtained product
-        4. if the inventory for the product is not found, create an inventory for the product
-        5. else, update the inventory of the product
+        6. Get the inventory of product with the obtained product
+        7. if the inventory for the product is not found, create an inventory for the product
+        8. else, update the inventory of the product
          */
 
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -77,7 +77,32 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public void deleteInventory(int userId, int productId) throws UserNotFoundException, UnAuthorizedAccessException {
+    public void deleteInventory(int userId, int productId) throws ProductNotFoundException, UserNotFoundException, UnAuthorizedAccessException {
 
+        /*
+        1. Get user from DB with the given userId
+        2. If the user is not found, throw exception
+        3. Check if the user is ADMIN, if not, throw UnAuthorized error
+        4. get product from DB with the given productId
+        5. If the product is not found then throw exception
+        6. Get the inventory of product with the obtained product
+        7. If the inventory is present, then delete it.
+         */
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException("user not found");
+        }
+        User user = optionalUser.get();
+        if (!UserType.ADMIN.equals(user.getUserType())) {
+            throw new UnAuthorizedAccessException("user is not authorized to perform operations on inventory");
+        }
+
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (optionalProduct.isEmpty()) {
+            throw new ProductNotFoundException("Product not found");
+        }
+        Product product = optionalProduct.get();
+        Optional<Inventory> optionalInventory = inventoryRepository.findByProduct(product);
+        optionalInventory.ifPresent(inventoryRepository::delete);
     }
 }

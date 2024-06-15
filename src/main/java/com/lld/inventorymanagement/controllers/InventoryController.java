@@ -2,6 +2,8 @@ package com.lld.inventorymanagement.controllers;
 
 import com.lld.inventorymanagement.dtos.CreateOrUpdateRequestDto;
 import com.lld.inventorymanagement.dtos.CreateOrUpdateResponseDto;
+import com.lld.inventorymanagement.dtos.DeleteInventoryRequestDto;
+import com.lld.inventorymanagement.dtos.DeleteInventoryResponseDto;
 import com.lld.inventorymanagement.dtos.ResponseStatus;
 import com.lld.inventorymanagement.exceptions.ProductNotFoundException;
 import com.lld.inventorymanagement.exceptions.UnAuthorizedAccessException;
@@ -32,12 +34,22 @@ public class InventoryController {
             responseDto.setInventory(inventory);
             responseDto.setResponseStatus(ResponseStatus.SUCCESS);
         } catch (UserNotFoundException | UnAuthorizedAccessException | ProductNotFoundException e) {
-            responseDto.setResponseStatus(ResponseStatus.FAIL);
+            responseDto.setResponseStatus(ResponseStatus.FAILURE);
         }
         return responseDto;
     }
 
-
-
-
+    public DeleteInventoryResponseDto deleteInventory(DeleteInventoryRequestDto requestDto) {
+        DeleteInventoryResponseDto responseDto = new DeleteInventoryResponseDto();
+        try {
+            inventoryService.deleteInventory(
+                    requestDto.getUserId(),
+                    requestDto.getProductId()
+            );
+            responseDto.setResponseStatus(ResponseStatus.SUCCESS);
+        } catch (UserNotFoundException | UnAuthorizedAccessException e) {
+            responseDto.setResponseStatus(ResponseStatus.FAILURE);
+        }
+        return responseDto;
+    }
 }
