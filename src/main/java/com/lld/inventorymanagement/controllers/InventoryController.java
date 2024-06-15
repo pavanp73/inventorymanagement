@@ -47,7 +47,7 @@ public class InventoryController {
                     requestDto.getProductId()
             );
             responseDto.setResponseStatus(ResponseStatus.SUCCESS);
-        } catch (UserNotFoundException | UnAuthorizedAccessException e) {
+        } catch (UserNotFoundException | UnAuthorizedAccessException | ProductNotFoundException e) {
             responseDto.setResponseStatus(ResponseStatus.FAILURE);
         }
         return responseDto;
